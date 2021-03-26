@@ -55,7 +55,7 @@ $.ajax({
 
 function new_order(data){
   $.ajax({
-    url: '/api/add_new_sale',
+    url: '/shopping_cart',
     type: 'POST',
     data: JSON.stringify({'product_id':data}),
     contentType: 'application/json; charset=utf-8',
