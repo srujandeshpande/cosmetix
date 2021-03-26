@@ -64,7 +64,7 @@ function new_order(data){
     statusCode: {
       200: function() {
         console.log("Success");
-        alert("Order Successfully Placed");
+        alert("Added to cart!");
       },
       403: function() {
         console.log("login");
