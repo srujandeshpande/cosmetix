@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Vyapara</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/fonts/ionicons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Contact-Form-Clean.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Footer-Basic.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Header-Blue.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Highlight-Blue.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Highlight-Phone.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/css/swiper.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Login-Form-Clean.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Login-Form-Dark.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Navigation-with-Button.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Registration-Form-with-Photo.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Simple-Slider.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/styles.css')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
+        <div class="container"><a class="navbar-brand" href="/">Vyapara</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse"
+                id="navcol-1">
+                <ul class="nav navbar-nav mr-auto">
+                    <li class="nav-item" role="presentation"></li>
+                    <li class="nav-item" role="presentation"></li>
+                </ul><span class="navbar-text actions"> <a class ="login">{{session['role']}} - {{session['email']}}</a><a class="login" href="/seller_login">Seller Dashboard</a><a class="login" href="/buyer_dash">&nbsp;Your Orders</a><a class="login" href="/buyer_login">&nbsp;Log In</a><a class="btn btn-light action-button" role="button" href="/buyer_new">Sign Up</a></span></div>
+        </div>
+    </nav>
+    <div class="contact-clean" style="padding: 25px;">
+        <form method="post" id="seller-add-new-product">
+            <h2 class="text-center">Add New Product or Service</h2>
+            <div class="form-group"><input class="form-control" type="text" name="name" placeholder="Product Name"><input class="form-control" type="text" name="price" placeholder="Price"></div>
+            <div class="form-group"><textarea class="form-control" name="description" placeholder="Description" rows="14"></textarea></div>
+            <div class="form-group"><button class="btn btn-primary" type="submit">Create&nbsp;</button></div>
+        </form>
+    </div>
+    <div style="padding: 26px;">
+        <h3 class="text-center" style="padding: 2px;">Recieved Orders</h3>
+        <div class="container">
+          <div class="row" id="orderrow">
+            <template id="otemplate">
+              <div class="col-md-4">
+                <strong class="oname">name</strong><br>
+                <i class="oprice">500</i>
+                <h6 class="obuyer">sadasd</h6>
+                <h6 class="odate">sadasd</h6>
+              </div>
+            </template>
+          </div>
+        </div>
+    </div>
+    <div style="padding: 26px;">
+        <h3 class="text-center" style="padding: 2px;">&nbsp;Listed Products</h3>
+        <div class="container">
+          <div class="row" id="prodrow">
+            <template id="ptemplate">
+              <div class="col-md-4">
+                <strong class="pname">name</strong><br>
+                <i class="price">500</i>
+                <p class="pdesc">sadasd</p>
+                <button class="pdel btn btn-dark">Delete</button>
+              </div>
+            </template>
+          </div>
+        </div>
+    </div>
+    <div class="footer-basic">
+        <footer>
+            <div class="social"><a href="https://www.instagram.com/srujandeshpande/"><i class="icon ion-social-instagram"></i></a><a href="https://www.linkedin.com/in/srujandeshpande/"><i class="icon ion-social-linkedin"></i></a><a href="https://srujandeshpande.tech"><i class="icon ion-android-compass"></i></a></div>
+            <p
+                class="copyright">Vyapara © 2020 Created by Srujan Deshpande</p>
+        </footer>
+    </div>
+    <script src="{{url_for('static', filename='assets/js/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='assets/bootstrap/js/bootstrap.min.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/js/swiper.jquery.min.js"></script>
+    <script src="{{url_for('static', filename='assets/js/Simple-Slider.js')}}"></script>
+    <script src="{{url_for('static', filename='js/sellerdash.js')}}"></script>
+</body>
+
+</html>
