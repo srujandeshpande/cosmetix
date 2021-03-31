@@ -13,6 +13,13 @@
 
 $(function () {
 
+  $('#checkout').click(function (e) {
+    e.preventDefault();
+    // var id = this.id;
+    console.log("Checkout clicked");
+    checkout_items();
+  });
+
   $.ajax({
     url: '/api/get_buyer_orders',
     type: 'GET',
@@ -79,6 +86,30 @@ $(function () {
     });
   }
 
+
+  function checkout_items(data) {
+    $.ajax({
+      url: '/api/checkout',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      async: true,
+      statusCode: {
+        200: function () {
+          console.log("Success");
+          alert("Successfully checked out");
+          location.reload();
+        },
+        403: function () {
+          console.log("login");
+          alert("Please login as a buyer");
+        },
+        500: function () {
+          console.log("Internal Server Error");
+          alert("Server Error. Please try again later.");
+        }
+      }
+    });
+  }
 
 
 });

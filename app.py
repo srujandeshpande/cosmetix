@@ -301,8 +301,8 @@ def get_seller_products():
 
 @app.route("/api/get_seller_orders")
 def get_seller_orders():
-    Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
-    data = json.loads(dumps(Sales_Data.find({"seller": session["email"]})))
+    Order_Data = pymongo.collection.Collection(db, "Order_Data")
+    data = json.loads(dumps(Order_Data.find({"seller": session["email"]})))
     data2 = {"count": len(data), "data": data}
     return data2
 
@@ -313,6 +313,19 @@ def get_buyer_orders():
     data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]})))
     data2 = {"count": len(data), "data": data}
     return data2
+
+
+@app.route("/api/checkout", methods=["POST"])
+def checkout_items():
+    Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
+    Order_Data = pymongo.collection.Collection(db, "Order_Data")
+    data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]}, {'_id':0})))
+    print(data)
+    if "role" in session and session["role"] == "buyer":
+        Order_Data.insert_many(data)
+        Sales_Data.delete_many({"buyer": session["email"]})
+        return Response(status=200)
+    return Response(status=403)
 
 
 @app.route("/api/delete_product", methods=["POST"])
