@@ -36,7 +36,7 @@ db = pymongo.database.Database(mongo, "vyapara")
 
 
 class Customer(FlaskView):
-    default_methods = ['GET', 'POST']
+    default_methods = ["GET", "POST"]
 
     def buyer_login(self):
         return render_template("login_buyer.html")
@@ -64,6 +64,7 @@ class Customer(FlaskView):
     #     )
     #     return Response(status=200)
 
+
 class user(FlaskView):
     # @route("/api/login_buyer")
 
@@ -88,7 +89,7 @@ class user(FlaskView):
 class shopping_cart(FlaskView):
 
     # @app.route("/api/add_new_sale", methods=["POST"])
-    
+
     # Add to shopping cart
     # AddItem()
     def post(self):
@@ -268,6 +269,18 @@ def add_new_product():
 #         )
 #         return Response(status=200)
 #     return Response(status=403)
+
+
+@app.route("/api/item", methods=["DELETE"])
+def delete_from_cart():
+    inputData = request.json
+    Product_Data = pymongo.collection.Collection(db, "Product_Data")
+    Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
+    today = date.today()
+    if "role" in session and session["role"] == "buyer":
+        Sales_Data.delete_one({"_id": ObjectId(inputData["item_id"])})
+        return Response(status=200)
+    return Response(status=403)
 
 
 @app.route("/api/get_all_products")
