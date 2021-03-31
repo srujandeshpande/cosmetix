@@ -307,10 +307,17 @@ def get_seller_orders():
     return data2
 
 
-@app.route("/api/get_buyer_orders")
-def get_buyer_orders():
+@app.route("/api/buyer/cart")
+def get_buyer_cart():
     Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
     data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]})))
+    data2 = {"count": len(data), "data": data}
+    return data2
+
+@app.route("/api/buyer/orders")
+def get_buyer_orders():
+    Order_Data = pymongo.collection.Collection(db, "Order_Data")
+    data = json.loads(dumps(Order_Data.find({"buyer": session["email"]})))
     data2 = {"count": len(data), "data": data}
     return data2
 
@@ -320,7 +327,9 @@ def checkout_items():
     Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
     Order_Data = pymongo.collection.Collection(db, "Order_Data")
     data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]}, {'_id':0})))
-    print(data)
+    # print(data)
+    if len(data) == 0:
+        return Response(status=400)
     if "role" in session and session["role"] == "buyer":
         Order_Data.insert_many(data)
         Sales_Data.delete_many({"buyer": session["email"]})

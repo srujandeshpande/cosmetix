@@ -21,7 +21,7 @@ $(function () {
   });
 
   $.ajax({
-    url: '/api/get_buyer_orders',
+    url: '/api/buyer/cart',
     type: 'GET',
     async: true,
     statusCode: {
@@ -30,8 +30,8 @@ $(function () {
         console.log(msg);
         var data = msg.data;
         console.log(data);
-        var tbody = document.querySelector("#orderrow");
-        var template = document.querySelector('#otemplate');
+        var tbody = document.querySelector("#cartrow");
+        var template = document.querySelector('#cart-template');
         data.forEach((item, i) => {
           var clone = template.content.cloneNode(true);
           var strong = clone.querySelectorAll("strong");
@@ -59,6 +59,42 @@ $(function () {
     }
   });
 
+  $.ajax({
+    url: '/api/buyer/orders',
+    type: 'GET',
+    async: true,
+    statusCode: {
+      200: function (msg) {
+        console.log("Success");
+        console.log(msg);
+        var data = msg.data;
+        console.log(data);
+        var tbody = document.querySelector("#orderrow");
+        var template = document.querySelector('#order-template');
+        data.forEach((item, i) => {
+          var clone = template.content.cloneNode(true);
+          var strong = clone.querySelectorAll("strong");
+          strong[0].textContent = item.name;
+          var i = clone.querySelectorAll("i");
+          i[0].textContent = item.price;
+          var h6 = clone.querySelectorAll("h6");
+          h6[0].textContent = item.date;
+          h6[1].textContent = item.seller;
+          tbody.appendChild(clone);
+        });
+        $('.pdel').click(function (e) {
+          e.preventDefault();
+          var id = this.id;
+          console.log(id);
+          delete_item(id);
+        });
+      },
+      500: function (msq) {
+        console.log("Internal Server Error");
+        alert("Server Error. Please try again later.");
+      }
+    }
+  });
 
   function delete_item(data) {
     $.ajax({
@@ -102,6 +138,10 @@ $(function () {
         403: function () {
           console.log("login");
           alert("Please login as a buyer");
+        },
+        400: function () {
+          console.log("empty");
+          alert("Your cart is empty!");
         },
         500: function () {
           console.log("Internal Server Error");
