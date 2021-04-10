@@ -133,6 +133,11 @@ def logout():
 #     return render_template("new_buyer.html")
 
 
+@app.route("/admin")
+def admin_portal():
+        return render_template("admin_portal.html")
+
+
 @app.route("/seller_login")
 def seller_login():
     if "role" in session and session["role"] == "seller":
