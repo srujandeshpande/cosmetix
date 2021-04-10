@@ -50,19 +50,6 @@ class Customer(FlaskView):
         else:
             return render_template("login_buyer.html")
 
-    # @route("/api/new_buyer", methods=["POST"])
-    # def new_buyer():
-    #     inputData = request.json
-    #     Buyer_Data = pymongo.collection.Collection(db, "Buyer_Data")
-    #     buyers = json.loads(dumps(Buyer_Data.find()))
-    #     if len(buyers) != 0:
-    #         for i in buyers:
-    #             if i["email"] == inputData["email"]:
-    #                 return Response(status=401)
-    #     Buyer_Data.insert_one(
-    #         {"email": inputData["email"], "password": inputData["password"]}
-    #     )
-    #     return Response(status=200)
 
 
 class user(FlaskView):
@@ -130,6 +117,12 @@ def homepage():
     return render_template("index.html")
 
 
+@app.route("/api/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return Response(status=200)
+
+
 # @app.route('/buyer_login')
 # def buyer_login():
 #     return (render_template('login_buyer.html'))
@@ -164,19 +157,19 @@ def seller_dash():
         return render_template("seller_login.html")
 
 
-# @app.route("/api/new_buyer", methods=["POST"])
-# def new_buyer():
-#     inputData = request.json
-#     Buyer_Data = pymongo.collection.Collection(db, "Buyer_Data")
-#     buyers = json.loads(dumps(Buyer_Data.find()))
-#     if len(buyers) != 0:
-#         for i in buyers:
-#             if i["email"] == inputData["email"]:
-#                 return Response(status=401)
-#     Buyer_Data.insert_one(
-#         {"email": inputData["email"], "password": inputData["password"]}
-#     )
-#     return Response(status=200)
+@app.route("/api/new_buyer", methods=["POST"])
+def new_buyer():
+    inputData = request.json
+    Buyer_Data = pymongo.collection.Collection(db, "Buyer_Data")
+    buyers = json.loads(dumps(Buyer_Data.find()))
+    if len(buyers) != 0:
+        for i in buyers:
+            if i["email"] == inputData["email"]:
+                return Response(status=401)
+    Buyer_Data.insert_one(
+        {"email": inputData["email"], "password": inputData["password"]}
+    )
+    return Response(status=200)
 
 
 @app.route("/api/new_seller", methods=["POST"])
@@ -314,6 +307,7 @@ def get_buyer_cart():
     data2 = {"count": len(data), "data": data}
     return data2
 
+
 @app.route("/api/buyer/orders")
 def get_buyer_orders():
     Order_Data = pymongo.collection.Collection(db, "Order_Data")
@@ -326,7 +320,7 @@ def get_buyer_orders():
 def checkout_items():
     Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
     Order_Data = pymongo.collection.Collection(db, "Order_Data")
-    data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]}, {'_id':0})))
+    data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]}, {"_id": 0})))
     # print(data)
     if len(data) == 0:
         return Response(status=400)
