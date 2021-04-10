@@ -60,15 +60,20 @@
     <form method="post" id="seller-add-new-product">
       <h2 class="text-center">Add New Product or Service</h2>
       <div class="form-group"><input class="form-control" type="text" name="name" placeholder="Product Name"></div>
-      <div  class="form-group"><input type="number" class="form-control" name="price" placeholder="Price" rows="14"></input></div>
+      <div class="form-group"><input type="number" class="form-control" name="price" placeholder="Price"
+          rows="14"></input></div>
       <div class="form-group"><textarea class="form-control" name="description" placeholder="Description"
           rows="14"></textarea></div>
-      <div class="form-group"><select class="form-control" name="category" placeholder="Category"
-          rows="14"><option value="makeup">Makeup</option><option value="skincare">Skincare</option><option value="haircare">Haircare</option><option value="bodycare">Bodycare</option></select></div>
+      <div class="form-group"><select class="form-control" name="category" placeholder="Category" rows="14">
+          <option value="makeup">Makeup</option>
+          <option value="skincare">Skincare</option>
+          <option value="haircare">Haircare</option>
+          <option value="bodycare">Bodycare</option>
+        </select></div>
       <div class="form-group"><input type="number" class="form-control" name="quantity" placeholder="Quantity"
-        rows="14"></input></div>
+          rows="14"></input></div>
       <div class="form-group"><textarea class="form-control" name="picture" placeholder="Image URL"
-        rows="14"></textarea></div>
+          rows="14"></textarea></div>
       <div class="form-group"><button class="btn btn-primary" type="submit">Create&nbsp;</button></div>
     </form>
   </div>
@@ -93,9 +98,13 @@
       <div class="row" id="prodrow">
         <template id="ptemplate">
           <div class="col-md-4">
-            <strong class="pname">name</strong><br>
-            <i class="price">500</i>
-            <p class="pdesc">sadasd</p>
+            <strong id="name" class="pname">name</strong><br>
+            <h6 id="category"></h6>
+            <img id="image" width="100"
+              src="https://th.bing.com/th/id/R44b93a2f76f36ed17c4e68277c51c1f9?rik=ZMHi7OW2ZnX8MA&riu=http%3a%2f%2fwww.clivebates.com%2fwp-content%2fuploads%2f2013%2f07%2fcosmetics-skin-Care.jpg&ehk=1hkJdxelAo8E4jwxctgMKS2RM1pNRmfNZPfabm5GHKA%3d&risl=&pid=ImgRaw"></img>
+            <i id="price" class="price">500</i>
+            <i id="quantity">0</i>
+            <p id="description" class="pdesc">sadasd</p>
             <button class="pdel btn btn-dark">Delete</button>
           </div>
         </template>
