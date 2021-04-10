@@ -233,14 +233,18 @@ def add_new_product():
     inputData = request.json
     Product_Data = pymongo.collection.Collection(db, "Product_Data")
     if "role" in session and session["role"] == "seller":
-        Product_Data.insert_one(
-            {
-                "seller": session["email"],
-                "name": inputData["name"],
-                "price": inputData["price"],
-                "description": inputData["description"],
-            }
-        )
+        # Product_Data.insert_one(
+        #     {
+        #         "seller": session["email"],
+        #         "name": inputData["name"],
+        #         "price": inputData["price"],
+        #         "description": inputData["description"],
+        #     }
+        # )
+        inputData['quantity'] =int(inputData["quantity"])
+        inputData['seller'] = session["email"]
+        inputData['approved'] = False
+        Product_Data.insert_one(inputData)
         return Response(status=200)
     return Response(status=403)
 

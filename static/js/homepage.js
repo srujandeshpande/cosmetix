@@ -27,14 +27,25 @@ $(function () {
         var template = document.querySelector('#ptemplate');
         data.forEach((item, i) => {
           var clone = template.content.cloneNode(true);
-          var strong = clone.querySelectorAll("strong");
-          strong[0].textContent = item.name;
-          var h6 = clone.querySelectorAll("h6");
-          h6[0].textContent = item.seller;
-          var i = clone.querySelectorAll("i");
-          i[0].textContent = item.price;
-          var p = clone.querySelectorAll("p");
-          p[0].textContent = item.description;
+          var name = clone.querySelectorAll("#name");
+          name[0].textContent = item.name;
+          var cat = clone.querySelectorAll("#category");
+          cat[0].textContent = item.category;
+
+          var image = clone.querySelectorAll("#image");
+          if (item.picture) {
+            image[0].setAttribute("src", item.picture);
+          }
+
+
+          var price = clone.querySelectorAll("#price");
+          price[0].textContent = item.price;
+
+          var desc = clone.querySelectorAll("#description");
+          desc[0].textContent = item.description;
+          var seller = clone.querySelectorAll("#seller");
+          seller[0].textContent = item.seller;
+
           var button = clone.querySelectorAll("button");
           button[0].setAttribute('id', item._id.$oid);
           tbody.appendChild(clone);
