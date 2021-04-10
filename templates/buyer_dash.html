@@ -34,14 +34,22 @@
         <ul class="nav navbar-nav mr-auto">
           <li class="nav-item" role="presentation"></li>
           <li class="nav-item" role="presentation"></li>
-        </ul><span class="navbar-text actions"> <a class="login">{{session['role']}} - {{session['email']}}</a>
-          <a class="login" href="/buyer_dash">&nbsp;Your Cart</a>
-          {% if session['role']!= 'buyer' %}
-          <a class="login" href="/seller_login">Seller Dashboard</a>
+        </ul>
+        <span class="navbar-text actions">
+          <a class="login">{{session['role']}} - {{session['email']}}</a>
+          {% if not session['role'] %}
           <a class="login" href="/buyer_login">&nbsp;Log In</a>
-          <a class="btn btn-light action-button" role="button" href="/buyer_new">Sign Up</a>{% endif %}
+          <a class="btn btn-light action-button" role="button" href="/buyer_new">Sign Up</a>
+          {% endif %}
           {% if session['role']== 'buyer' %}
-          <a class="btn btn-light action-button" role="button" href="/">Log Out</a>{% endif %}
+          <a class="login" href="/buyer_dash">&nbsp;Your Cart</a>
+          {% endif %}
+          {% if session['role']== 'seller' %}
+          <a class="login" href="/seller_dash">Seller Dashboard</a>
+          {% endif %}
+          {% if session['role'] %}
+          <a class="btn btn-light action-button" role="button" href="/">Log Out</a>
+          {% endif %}
         </span>
       </div>
     </div>

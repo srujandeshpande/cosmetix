@@ -2,64 +2,89 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Cosmetix</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/bootstrap/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/fonts/ionicons.min.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Contact-Form-Clean.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Footer-Basic.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Header-Blue.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Highlight-Blue.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Highlight-Phone.css')}}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/css/swiper.min.css">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Login-Form-Clean.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Login-Form-Dark.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Navigation-with-Button.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Registration-Form-with-Photo.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Simple-Slider.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/styles.css')}}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Cosmetix</title>
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/bootstrap/css/bootstrap.min.css')}}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/fonts/ionicons.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Contact-Form-Clean.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Footer-Basic.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Header-Blue.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Highlight-Blue.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Highlight-Phone.css')}}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/css/swiper.min.css">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Login-Form-Clean.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Login-Form-Dark.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Navigation-with-Button.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Registration-Form-with-Photo.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/Simple-Slider.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/styles.css')}}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 
 <body>
-    <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
-        <div class="container"><a class="navbar-brand" href="/">Cosmetix</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse"
-                id="navcol-1">
-                <ul class="nav navbar-nav mr-auto">
-                    <li class="nav-item" role="presentation"></li>
-                    <li class="nav-item" role="presentation"></li>
-                </ul><span class="navbar-text actions"> <a class ="login">{{session['role']}} - {{session['email']}}</a><a class="login" href="/seller_login">Seller Dashboard</a><a class="login" href="/buyer_dash">&nbsp;Your Orders</a><a class="login" href="/buyer_login">&nbsp;Log In</a><a class="btn btn-light action-button" role="button" href="/buyer_new">Sign Up</a></span></div>
-        </div>
-    </nav>
-    <div class="register-photo">
-        <div class="form-container">
-            <div class="image-holder"></div>
-            <form method="post" id="buyer-new-form">
-                <h2 class="text-center"><strong>Create</strong> a new Buyer account.</h2>
-                <div class="form-group"><input class="form-control" type="email" name="email" placeholder="Email"></div>
-                <div class="form-group"><input class="form-control" type="password" name="password" placeholder="Password"></div>
-                <div class="form-group"><input class="form-control" type="password" name="password-repeat" placeholder="Password (repeat)"></div>
-                <div class="form-group">
-                    <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="checkbox">I agree to the license terms.</label></div>
-                </div>
-                <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Sign Up</button></div><a class="already" href="login_buyer.html">You already have an account? Login here.</a></form>
-        </div>
+  <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
+    <div class="container"><a class="navbar-brand" href="/">Cosmetix</a><button data-toggle="collapse"
+        class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span
+          class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navcol-1">
+        <ul class="nav navbar-nav mr-auto">
+          <li class="nav-item" role="presentation"></li>
+          <li class="nav-item" role="presentation"></li>
+        </ul>
+        <span class="navbar-text actions">
+          <a class="login">{{session['role']}} - {{session['email']}}</a>
+          {% if not session['role'] %}
+          <a class="login" href="/buyer_login">&nbsp;Log In</a>
+          <a class="btn btn-light action-button" role="button" href="/buyer_new">Sign Up</a>
+          {% endif %}
+          {% if session['role']== 'buyer' %}
+          <a class="login" href="/buyer_dash">&nbsp;Your Cart</a>
+          {% endif %}
+          {% if session['role']== 'seller' %}
+          <a class="login" href="/seller_dash">Seller Dashboard</a>
+          {% endif %}
+          {% if session['role'] %}
+          <a class="btn btn-light action-button" role="button" href="/">Log Out</a>
+          {% endif %}
+        </span>
+      </div>
     </div>
-    <div class="footer-basic">
-        <footer>
-            <div class="social"><a href="https://www.instagram.com/srujandeshpande/"><i class="icon ion-social-instagram"></i></a><a href="https://www.linkedin.com/in/srujandeshpande/"><i class="icon ion-social-linkedin"></i></a><a href="https://srujandeshpande.tech"><i class="icon ion-android-compass"></i></a></div>
-            <p
-                class="copyright">Cosmetix © 2021</p>
-        </footer>
+  </nav>
+  <div class="register-photo">
+    <div class="form-container">
+      <div class="image-holder"></div>
+      <form method="post" id="buyer-new-form">
+        <h2 class="text-center"><strong>Create</strong> a new Buyer account.</h2>
+        <div class="form-group"><input class="form-control" type="email" name="email" placeholder="Email"></div>
+        <div class="form-group"><input class="form-control" type="password" name="password" placeholder="Password">
+        </div>
+        <div class="form-group"><input class="form-control" type="password" name="password-repeat"
+            placeholder="Password (repeat)"></div>
+        <div class="form-group">
+          <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="checkbox">I
+              agree to the license terms.</label></div>
+        </div>
+        <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Sign Up</button></div><a
+          class="already" href="login_buyer.html">You already have an account? Login here.</a>
+      </form>
     </div>
-    <script src="{{url_for('static', filename='assets/js/jquery.min.js')}}"></script>
-    <script src="{{url_for('static', filename='assets/bootstrap/js/bootstrap.min.js')}}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/js/swiper.jquery.min.js"></script>
-    <script src="{{url_for('static', filename='assets/js/Simple-Slider.js')}}"></script>
-    <script src="{{url_for('static', filename='js/buyernew.js')}}"></script>
+  </div>
+  <div class="footer-basic">
+    <footer>
+      <div class="social"><a href="https://www.instagram.com/srujandeshpande/"><i
+            class="icon ion-social-instagram"></i></a><a href="https://www.linkedin.com/in/srujandeshpande/"><i
+            class="icon ion-social-linkedin"></i></a><a href="https://srujandeshpande.tech"><i
+            class="icon ion-android-compass"></i></a></div>
+      <p class="copyright">Cosmetix © 2021</p>
+    </footer>
+  </div>
+  <script src="{{url_for('static', filename='assets/js/jquery.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/bootstrap/js/bootstrap.min.js')}}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/js/swiper.jquery.min.js"></script>
+  <script src="{{url_for('static', filename='assets/js/Simple-Slider.js')}}"></script>
+  <script src="{{url_for('static', filename='js/buyernew.js')}}"></script>
 </body>
 
 </html>
