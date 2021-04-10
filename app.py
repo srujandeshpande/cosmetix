@@ -98,6 +98,7 @@ class shopping_cart(FlaskView):
                     "name": info["name"],
                 }
             )
+            Product_Data.update_one({"_id": ObjectId(inputData["product_id"])}, {"$inc": { "quantity": -1}})
             return Response(status=200)
         return Response(status=403)
 
