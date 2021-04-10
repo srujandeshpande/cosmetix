@@ -34,7 +34,11 @@
           <li class="nav-item" role="presentation"></li>
         </ul>
         <span class="navbar-text actions">
-          <a class="login">{{session['role']}} - {{session['email']}}</a>
+          <a class="login">
+            {% if session['role'] %}
+            {{session['role'].capitalize()}} - {{session['email']}}
+            {% endif %}
+          </a>
           {% if not session['role'] %}
           <a class="login" href="/buyer_login">&nbsp;Log In</a>
           <a class="btn btn-light action-button" role="button" href="/buyer_new">Sign Up</a>

@@ -34,7 +34,11 @@
           <li class="nav-item" role="presentation"></li>
         </ul>
         <span class="navbar-text actions">
-          <a class="login">{{session['role']}} - {{session['email']}}</a>
+          <a class="login">
+            {% if session['role'] %}
+            {{session['role'].capitalize()}} - {{session['email']}}
+            {% endif %}
+          </a>
           {% if not session['role'] %}
           <a class="login" href="/buyer_login">&nbsp;Log In</a>
           <a class="btn btn-light action-button" role="button" href="/buyer_new">Sign Up</a>
@@ -59,8 +63,8 @@
     <div class="form-group"><input class="form-control" type="password" name="password" placeholder="Password">
     </div>
     <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Log In</button></div>
-    <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Log In as Seller</button></div>
   </form>
+  <div class="form-group"><a class="btn btn-primary btn-block" href="/seller_login">Log In as Seller</a></div>
   </div>
   <div class="footer-basic">
     <footer>
