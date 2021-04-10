@@ -52,7 +52,7 @@
           <a class="login" href="/seller_dash">Seller Dashboard</a>
           {% endif %}
           {% if session['role'] %}
-          <a class="btn btn-light action-button" role="button" href="/">Log Out</a>
+          <a class="btn btn-light action-button" role="button" href="/" id="logout-button">Log Out</a>
           {% endif %}
         </span>
       </div>
@@ -111,6 +111,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/js/swiper.jquery.min.js"></script>
   <script src="{{url_for('static', filename='assets/js/Simple-Slider.js')}}"></script>
   <script src="{{url_for('static', filename='js/buyerdash.js')}}"></script>
+  <script src="{{url_for('static', filename='js/logout.js')}}"></script>
 </body>
 
 </html>
