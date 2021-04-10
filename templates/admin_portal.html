@@ -57,19 +57,40 @@
     </div>
   </nav>
   <div style="padding: 26px;">
+    <h3 class="text-center" style="padding: 2px;">&nbsp;Unapproved Products</h3>
+    <div class="container">
+      <div class="row" id="u-prodrow">
+        <template id="u-ptemplate">
+          <div class="col-md-4">
+            <strong id="u-name" class="pname">name</strong><br>
+            <h6 id="u-category"></h6>
+            <img id="u-image" width="100"
+              src="https://www.christinamossnaturals.com/wp-content/uploads/2016/11/Hair-Mask-1.jpg"></img>
+            <i id="u-price" class="price">500</i>
+            <i id="u-quantity">0</i>
+            <p id="u-description" class="pdesc">sadasd</p>
+            <p id="u-seller" class="pdesc">seller name</p>
+            <button class="abut btn btn-light">Approve</button>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+  <div style="padding: 26px;">
     <h3 class="text-center" style="padding: 2px;">&nbsp;Listed Products</h3>
     <div class="container">
-      <div class="row" id="prodrow">
-        <template id="ptemplate">
+      <div class="row" id="a-prodrow">
+        <template id="a-ptemplate">
           <div class="col-md-4">
-            <strong id="name" class="pname">name</strong><br>
-            <h6 id="category"></h6>
-            <img id="image" width="100"
-              src="https://th.bing.com/th/id/R44b93a2f76f36ed17c4e68277c51c1f9?rik=ZMHi7OW2ZnX8MA&riu=http%3a%2f%2fwww.clivebates.com%2fwp-content%2fuploads%2f2013%2f07%2fcosmetics-skin-Care.jpg&ehk=1hkJdxelAo8E4jwxctgMKS2RM1pNRmfNZPfabm5GHKA%3d&risl=&pid=ImgRaw"></img>
-            <i id="price" class="price">500</i>
-            <i id="quantity">0</i>
-            <p id="description" class="pdesc">sadasd</p>
-            <button class="pdel btn btn-dark">Delete</button>
+            <strong id="a-name" class="pname">name</strong><br>
+            <h6 id="a-category"></h6>
+            <img id="a-image" width="100"
+              src="https://www.christinamossnaturals.com/wp-content/uploads/2016/11/Hair-Mask-1.jpg"></img>
+            <i id="a-price" class="price">500</i>
+            <i id="a-quantity">0</i>
+            <p id="a-description" class="pdesc">sadasd</p>
+            <p id="a-seller" class="pdesc">seller name</p>
+            <button class="dbut btn btn-light">Delete</button>
           </div>
         </template>
       </div>
@@ -88,7 +109,7 @@
   <script src="{{url_for('static', filename='assets/bootstrap/js/bootstrap.min.js')}}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/js/swiper.jquery.min.js"></script>
   <script src="{{url_for('static', filename='assets/js/Simple-Slider.js')}}"></script>
-  <script src="{{url_for('static', filename='js/sellerdash.js')}}"></script>
+  <script src="{{url_for('static', filename='js/admindash.js')}}"></script>
   <script src="{{url_for('static', filename='js/logout.js')}}"></script>
 </body>
 

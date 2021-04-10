@@ -14,7 +14,7 @@
 $(function() {
 
 $.ajax({
-  url: '/api/get_seller_products',
+  url: '/api/seller/products',
   type: 'GET',
   async: true,
   statusCode: {
@@ -64,7 +64,7 @@ $.ajax({
 });
 
 $.ajax({
-  url: '/api/get_seller_orders',
+  url: '/api/seller/orders',
   type: 'GET',
   async: true,
   statusCode: {
@@ -96,7 +96,7 @@ $.ajax({
 
 function create_new(data){
   $.ajax({
-    url: '/api/add_new_product',
+    url: '/api/product',
     type: 'POST',
     data: JSON.stringify(data),
     contentType: 'application/json; charset=utf-8',
@@ -124,8 +124,8 @@ $('#seller-add-new-product').submit(function (e) {
 
 function del_prod(data){
   $.ajax({
-    url: '/api/delete_product',
-    type: 'POST',
+    url: '/api/delete_product/',
+    type: 'DELETE',
     data: JSON.stringify({'product_id':data}),
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',

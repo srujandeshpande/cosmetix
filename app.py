@@ -51,7 +51,6 @@ class Customer(FlaskView):
             return render_template("login_buyer.html")
 
 
-
 class user(FlaskView):
     # @route("/api/login_buyer")
 
@@ -98,7 +97,9 @@ class shopping_cart(FlaskView):
                     "name": info["name"],
                 }
             )
-            Product_Data.update_one({"_id": ObjectId(inputData["product_id"])}, {"$inc": { "quantity": -1}})
+            Product_Data.update_one(
+                {"_id": ObjectId(inputData["product_id"])}, {"$inc": {"quantity": -1}}
+            )
             return Response(status=200)
         return Response(status=403)
 
@@ -136,7 +137,9 @@ def logout():
 
 @app.route("/admin")
 def admin_portal():
-        return render_template("admin_portal.html")
+    session["role"] = "admin"
+    session["email"] = "admin@admin.com"
+    return render_template("admin_portal.html")
 
 
 @app.route("/seller_login")
@@ -229,7 +232,7 @@ def login_seller():
     return Response(status=401)
 
 
-@app.route("/api/add_new_product", methods=["POST"])
+@app.route("/api/product", methods=["POST"])
 def add_new_product():
     inputData = request.json
     Product_Data = pymongo.collection.Collection(db, "Product_Data")
@@ -242,9 +245,9 @@ def add_new_product():
         #         "description": inputData["description"],
         #     }
         # )
-        inputData['quantity'] =int(inputData["quantity"])
-        inputData['seller'] = session["email"]
-        inputData['approved'] = False
+        inputData["quantity"] = int(inputData["quantity"])
+        inputData["seller"] = session["email"]
+        inputData["approved"] = False
         Product_Data.insert_one(inputData)
         return Response(status=200)
     return Response(status=403)
@@ -289,12 +292,20 @@ def delete_from_cart():
 @app.route("/api/get_all_products")
 def get_products():
     Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    data = json.loads(dumps(Product_Data.find()))
+    data = json.loads(dumps(Product_Data.find({"approved": True})))
     data2 = {"count": len(data), "data": data}
     return data2
 
 
-@app.route("/api/get_seller_products")
+@app.route("/api/products/unapproved/")
+def get_products_unnapproved():
+    Product_Data = pymongo.collection.Collection(db, "Product_Data")
+    data = json.loads(dumps(Product_Data.find({"approved": False})))
+    data2 = {"count": len(data), "data": data}
+    return data2
+
+
+@app.route("/api/seller/products")
 def get_seller_products():
     Product_Data = pymongo.collection.Collection(db, "Product_Data")
     data = json.loads(dumps(Product_Data.find({"seller": session["email"]})))
@@ -302,7 +313,7 @@ def get_seller_products():
     return data2
 
 
-@app.route("/api/get_seller_orders")
+@app.route("/api/seller/orders")
 def get_seller_orders():
     Order_Data = pymongo.collection.Collection(db, "Order_Data")
     data = json.loads(dumps(Order_Data.find({"seller": session["email"]})))
@@ -341,11 +352,25 @@ def checkout_items():
     return Response(status=403)
 
 
-@app.route("/api/delete_product", methods=["POST"])
+@app.route("/api/product/approve/", methods=["PUT"])
+def approve_product():
+    inputData = request.json
+    Product_Data = pymongo.collection.Collection(db, "Product_Data")
+    if "role" in session and session["role"] == "admin":
+        Product_Data.update_one(
+            {"_id": ObjectId(inputData["product_id"])}, {"$set": {"approved": True}}
+        )
+        return Response(status=200)
+    return Response(status=403)
+
+
+@app.route("/api/delete_product/", methods=["DELETE"])
 def delete_product():
     inputData = request.json
     Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    if "role" in session and session["role"] == "seller":
+    if "role" in session and (
+        session["role"] == "seller" or session["role"] == "admin"
+    ):
         Product_Data.delete_one({"_id": ObjectId(inputData["product_id"])})
         return Response(status=200)
     return Response(status=403)
