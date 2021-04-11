@@ -23,7 +23,7 @@ $(function () {
         console.log(msg);
         var data = msg.data;
         console.log(data);
-        var tbody = document.querySelector("#prodrow");
+        // var tbody = document.querySelector("#prodrow");
         var template = document.querySelector('#ptemplate');
         data.forEach((item, i) => {
           var clone = template.content.cloneNode(true);
@@ -31,6 +31,7 @@ $(function () {
           name[0].textContent = item.name;
           var cat = clone.querySelectorAll("#category");
           cat[0].textContent = item.category;
+          var catid = "#"+item.category.toLowerCase()+"-row";
 
           var image = clone.querySelectorAll("#image");
           if (item.picture) {
@@ -48,7 +49,9 @@ $(function () {
 
           var button = clone.querySelectorAll("button");
           button[0].setAttribute('id', item._id.$oid);
-          tbody.appendChild(clone);
+
+          var trow = document.querySelector(catid);
+          trow.appendChild(clone);
         });
         $('.pbuy').click(function (e) {
           e.preventDefault();
