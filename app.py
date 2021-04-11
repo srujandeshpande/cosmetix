@@ -289,6 +289,14 @@ def delete_from_cart():
     return Response(status=403)
 
 
+@app.route("/api/products/available/")
+def get_available_products():
+    Product_Data = pymongo.collection.Collection(db, "Product_Data")
+    data = json.loads(dumps(Product_Data.find({"approved": True, "quantity": {"$gt":0}})))
+    data2 = {"count": len(data), "data": data}
+    return data2
+
+
 @app.route("/api/get_all_products")
 def get_products():
     Product_Data = pymongo.collection.Collection(db, "Product_Data")

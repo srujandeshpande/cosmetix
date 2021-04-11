@@ -14,7 +14,7 @@
 $(function () {
 
   $.ajax({
-    url: '/api/get_all_products',
+    url: '/api/products/available',
     type: 'GET',
     async: true,
     statusCode: {
