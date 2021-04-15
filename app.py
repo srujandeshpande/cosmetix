@@ -178,6 +178,8 @@ def new_buyer():
     Buyer_Data.insert_one(
         {"email": inputData["email"], "password": inputData["password"]}
     )
+    session["role"] = "buyer"
+    session["email"] = inputData["email"]
     return Response(status=200)
 
 
@@ -193,6 +195,8 @@ def new_seller():
     Seller_Data.insert_one(
         {"email": inputData["email"], "password": inputData["password"]}
     )
+    session["role"] = "seller"
+    session["email"] = inputData["email"]
     return Response(status=200)
 
 

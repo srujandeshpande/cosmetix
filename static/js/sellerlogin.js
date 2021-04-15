@@ -59,7 +59,8 @@ function create_new(data){
     statusCode: {
       200: function() {
         console.log("Success");
-        alert("Successfully created account. Please login with your new credentials");
+        alert("Successfully created account.");
+        document.location.href = '/seller_dash';
       },
       401: function() {
         console.log("Duplicate");
