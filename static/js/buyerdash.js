@@ -38,9 +38,13 @@ $(function () {
           strong[0].textContent = item.name;
           var i = clone.querySelectorAll("i");
           i[0].textContent = item.price;
-          var h6 = clone.querySelectorAll("h6");
-          h6[0].textContent = item.date;
-          h6[1].textContent = item.seller;
+          if ('quantity' in item) {
+            i[1].textContent = item.quantity;
+          }
+          var datef = clone.querySelectorAll("date");
+          datef[0].textContent = item.date;
+          var seller = clone.querySelectorAll("seller");
+          seller[0].textContent = item.seller;
           var button = clone.querySelectorAll("button");
           button[0].setAttribute('id', item._id.$oid);
           tbody.appendChild(clone);
@@ -77,9 +81,13 @@ $(function () {
           strong[0].textContent = item.name;
           var i = clone.querySelectorAll("i");
           i[0].textContent = item.price;
-          var h6 = clone.querySelectorAll("h6");
-          h6[0].textContent = item.date;
-          h6[1].textContent = item.seller;
+          if ('quantity' in item) {
+            i[1].textContent = item.quantity;
+          }
+          var datef = clone.querySelectorAll("date");
+          datef[0].textContent = item.date;
+          var seller = clone.querySelectorAll("seller");
+          seller[0].textContent = item.seller;
           tbody.appendChild(clone);
         });
         $('.pdel').click(function (e) {
@@ -105,7 +113,7 @@ $(function () {
         console.log("Success");
         console.log(msg);
         const total = document.getElementById("total-field")
-        total.innerText = "Total: Rs. "+msg['price']
+        total.innerText = "Total: Rs. " + msg['price']
       },
       500: function (msq) {
         console.log("Internal Server Error");

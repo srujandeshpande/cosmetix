@@ -87,16 +87,25 @@ class shopping_cart(FlaskView):
             info = json.loads(
                 dumps(Product_Data.find_one({"_id": ObjectId(inputData["product_id"])}))
             )
-            Sales_Data.insert_one(
-                {
-                    "product": inputData["product_id"],
-                    "buyer": session["email"],
-                    "date": str(today.strftime("%b-%d-%Y")),
-                    "price": info["price"],
-                    "seller": info["seller"],
-                    "name": info["name"],
-                }
+            orderInfo = json.loads(
+                dumps(Sales_Data.find_one({"product": inputData["product_id"]}))
             )
+            if orderInfo:
+                Sales_Data.update_one(
+                    {"product": inputData["product_id"]}, {"$inc": {"quantity": 1}}
+                )
+            else:
+                Sales_Data.insert_one(
+                    {
+                        "product": inputData["product_id"],
+                        "buyer": session["email"],
+                        "date": str(today.strftime("%b-%d-%Y")),
+                        "price": info["price"],
+                        "seller": info["seller"],
+                        "name": info["name"],
+                        "quantity": 1,
+                    }
+                )
             Product_Data.update_one(
                 {"_id": ObjectId(inputData["product_id"])}, {"$inc": {"quantity": -1}}
             )
@@ -349,7 +358,7 @@ def get_buyer_total():
     data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]})))
     tprice = 0
     for i in data:
-        if 'price' in i:
+        if "price" in i:
             tprice += int(i["price"])
     return {"price": tprice}
 
