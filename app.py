@@ -266,6 +266,20 @@ def add_new_product():
     return Response(status=403)
 
 
+@app.route("/api/product/edit/", methods=["PUT"])
+def edit_product():
+    inputData = request.json
+    Product_Data = pymongo.collection.Collection(db, "Product_Data")
+    if "role" in session and session["role"] == "seller":
+        inputData["quantity"] = int(inputData["quantity"])
+        # inputData["_id"] = ObjectId(inputData["_id"])
+        id = ObjectId(inputData.pop("_id"))
+        print(inputData)
+        Product_Data.update_one({"_id": id}, {"$set": inputData})
+        return Response(status=200)
+    return Response(status=403)
+
+
 # @app.route("/api/add_new_sale", methods=["POST"])
 # def add_new_sale():
 #     inputData = request.json
@@ -376,6 +390,17 @@ def get_seller_products():
     data = json.loads(dumps(Product_Data.find({"seller": session["email"]})))
     data2 = {"count": len(data), "data": data}
     return data2
+
+
+@app.route("/api/seller/product/", methods=["POST"])
+def get_seller_product():
+    inputData = request.json
+    Product_Data = pymongo.collection.Collection(db, "Product_Data")
+    data = json.loads(
+        dumps(Product_Data.find_one({"_id": ObjectId(inputData["product_id"])}))
+    )
+    # data2 = {"count": len(data), "data": data}
+    return data
 
 
 @app.route("/api/seller/orders")

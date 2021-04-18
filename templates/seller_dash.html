@@ -59,16 +59,22 @@
   <div class="contact-clean" style="padding: 25px;">
     <form method="post" id="seller-add-new-product">
       <h2 class="text-center">Add New Product or Service</h2>
-      <div class="form-group"><input class="form-control" type="text" name="name" placeholder="Product Name" required></div>
-      <div  class="form-group"><input type="number" class="form-control" name="price" placeholder="Price" rows="14" required></input></div>
-      <div class="form-group"><textarea class="form-control" name="description" placeholder="Description"
-          rows="14" required></textarea></div>
-      <div class="form-group"><select class="form-control" name="category" placeholder="Category"
-          rows="14" required><option value="Makeup">Makeup</option><option value="Skincare">Skincare</option><option value="Haircare">Haircare</option><option value="Bodycare">Bodycare</option></select></div>
-      <div class="form-group"><input type="number" class="form-control" name="quantity" placeholder="Quantity"
-        rows="14" required></input></div>
-      <div class="form-group"><textarea class="form-control" name="picture" placeholder="Image URL"
-        rows="14" required></textarea></div>
+      <div class="form-group"><input class="form-control" type="text" name="name" placeholder="Product Name" required>
+      </div>
+      <div class="form-group"><input type="number" class="form-control" name="price" placeholder="Price" rows="14"
+          required></input></div>
+      <div class="form-group"><textarea class="form-control" name="description" placeholder="Description" rows="14"
+          required></textarea></div>
+      <div class="form-group"><select class="form-control" name="category" placeholder="Category" rows="14" required>
+          <option value="Makeup">Makeup</option>
+          <option value="Skincare">Skincare</option>
+          <option value="Haircare">Haircare</option>
+          <option value="Bodycare">Bodycare</option>
+        </select></div>
+      <div class="form-group"><input type="number" class="form-control" name="quantity" placeholder="Quantity" rows="14"
+          required></input></div>
+      <div class="form-group"><textarea class="form-control" name="picture" placeholder="Image URL" rows="14"
+          required></textarea></div>
       <div class="form-group"><button class="btn btn-primary" type="submit">Create&nbsp;</button></div>
     </form>
   </div>
@@ -101,8 +107,55 @@
             <i id="quantity">0</i>
             <p id="description" class="pdesc">sadasd</p>
             <button class="pdel btn btn-dark">Delete</button>
+            <!-- Button trigger modal -->
+            <button type="button" class="edit-btn btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+              Edit
+            </button>
           </div>
         </template>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Product</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="post" id="edit-form">
+            <div class="form-group"><input id="edit-id" class="form-control" type="text" name="_id"
+                placeholder="Product ID" disabled>
+            </div>
+            <div class="form-group"><input id="edit-name" class="form-control" type="text" name="name"
+                placeholder="Product Name" required>
+            </div>
+            <div class="form-group"><input id="edit-price" type="number" class="form-control" name="price"
+                placeholder="Price" rows="14" required></input></div>
+            <div class="form-group"><textarea id="edit-desc" class="form-control" name="description"
+                placeholder="Description" rows="5" required></textarea></div>
+            <div class="form-group"><select id="edit-catgory" class="form-control" name="category"
+                placeholder="Category" rows="5" required>
+                <option value="Makeup">Makeup</option>
+                <option value="Skincare">Skincare</option>
+                <option value="Haircare">Haircare</option>
+                <option value="Bodycare">Bodycare</option>
+              </select></div>
+            <div class="form-group"><input id="edit-quantity" type="number" class="form-control" name="quantity"
+                placeholder="Quantity" rows="14" required></input></div>
+            <div class="form-group"><textarea id="edit-url" class="form-control" name="picture" placeholder="Image URL"
+                rows="5" required></textarea></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button id="seller-edit-product" form="edit-form" type="submit" class="btn btn-primary">Save changes</button>
+        </div>
       </div>
     </div>
   </div>
