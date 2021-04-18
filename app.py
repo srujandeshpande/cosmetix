@@ -296,7 +296,9 @@ def delete_from_cart():
 @app.route("/api/products/available/")
 def get_available_products():
     Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    data = json.loads(dumps(Product_Data.find({"approved": True, "quantity": {"$gt":0}})))
+    data = json.loads(
+        dumps(Product_Data.find({"approved": True, "quantity": {"$gt": 0}}))
+    )
     data2 = {"count": len(data), "data": data}
     return data2
 
@@ -339,6 +341,17 @@ def get_buyer_cart():
     data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]})))
     data2 = {"count": len(data), "data": data}
     return data2
+
+
+@app.route("/api/buyer/total/")
+def get_buyer_total():
+    Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
+    data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]})))
+    tprice = 0
+    for i in data:
+        if 'price' in i:
+            tprice += int(i["price"])
+    return {"price": tprice}
 
 
 @app.route("/api/buyer/orders")

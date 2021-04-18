@@ -7,3 +7,14 @@ Online Retail Platform
 - @adityamshetty
 - @SafaHurayn
 - @srujandeshpande
+
+## To run
+- Production: 
+```bash
+gunicorn app:app
+```
+- Developemnt: 
+```bash
+export FLASK_ENV=development
+flask run
+```

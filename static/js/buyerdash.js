@@ -96,6 +96,24 @@ $(function () {
     }
   });
 
+  $.ajax({
+    url: '/api/buyer/total/',
+    type: 'GET',
+    async: true,
+    statusCode: {
+      200: function (msg) {
+        console.log("Success");
+        console.log(msg);
+        const total = document.getElementById("total-field")
+        total.innerText = "Total: Rs. "+msg['price']
+      },
+      500: function (msq) {
+        console.log("Internal Server Error");
+        alert("Server Error. Please try again later.");
+      }
+    }
+  });
+
   function delete_item(data) {
     $.ajax({
       url: '/api/item',
