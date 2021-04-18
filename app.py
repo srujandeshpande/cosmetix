@@ -300,11 +300,46 @@ def delete_from_cart():
         data = json.loads(
             dumps(Sales_Data.find_one({"_id": ObjectId(inputData["item_id"])}))
         )
-        print(data)
+        # print(data)
         Sales_Data.delete_one({"_id": ObjectId(inputData["item_id"])})
         Product_Data.update_one(
-            {"_id": ObjectId(data["product"])}, {"$inc": {"quantity": int(data['quantity'])}}
+            {"_id": ObjectId(data["product"])},
+            {"$inc": {"quantity": int(data["quantity"])}},
         )
+        return Response(status=200)
+    return Response(status=403)
+
+
+@app.route("/api/cart/quantity/", methods=["POST"])
+def update_cart_quantity():
+    inputData = request.json
+    Product_Data = pymongo.collection.Collection(db, "Product_Data")
+    Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
+    today = date.today()
+    if "role" in session and session["role"] == "buyer":
+        data = json.loads(
+            dumps(Sales_Data.find_one({"_id": ObjectId(inputData["item_id"])}))
+        )
+        proddata = json.loads(
+            dumps(Product_Data.find_one({"_id": ObjectId(data["product"])}))
+        )
+        if int(data["quantity"]) == 1 and int(inputData["n"]) == -1:
+            Sales_Data.delete_one({"_id": ObjectId(inputData["item_id"])})
+            Product_Data.update_one(
+                {"_id": ObjectId(data["product"])},
+                {"$inc": {"quantity": int(data["quantity"])}},
+            )
+        elif int(inputData["n"]) == 1 and int(proddata["quantity"]) == 0:
+            return Response(status=401)
+        else:
+            Sales_Data.update_one(
+                {"_id": ObjectId(inputData["item_id"])},
+                {"$inc": {"quantity": int(inputData["n"])}},
+            )
+            Product_Data.update_one(
+                {"_id": ObjectId(data["product"])},
+                {"$inc": {"quantity": -int(inputData["n"])}},
+            )
         return Response(status=200)
     return Response(status=403)
 

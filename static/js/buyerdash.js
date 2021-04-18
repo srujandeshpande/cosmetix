@@ -45,7 +45,11 @@ $(function () {
           datef[0].textContent = item.date;
           var seller = clone.querySelectorAll("seller");
           seller[0].textContent = item.seller;
-          var button = clone.querySelectorAll("button");
+          var button = clone.querySelectorAll(".pdel");
+          button[0].setAttribute('id', item._id.$oid);
+          var button = clone.querySelectorAll(".inc-quantity");
+          button[0].setAttribute('id', item._id.$oid);
+          var button = clone.querySelectorAll(".dec-quantity");
           button[0].setAttribute('id', item._id.$oid);
           tbody.appendChild(clone);
         });
@@ -54,6 +58,18 @@ $(function () {
           var id = this.id;
           console.log(id);
           delete_item(id);
+        });
+        $('.inc-quantity').click(function (e) {
+          e.preventDefault();
+          var id = this.id;
+          console.log(id);
+          update_quantity(id, 1);
+        });
+        $('.dec-quantity').click(function (e) {
+          e.preventDefault();
+          var id = this.id;
+          console.log(id);
+          update_quantity(id, -1);
         });
       },
       500: function (msq) {
@@ -142,6 +158,31 @@ $(function () {
     });
   }
 
+  function update_quantity(data, n) {
+    $.ajax({
+      url: '/api/cart/quantity/',
+      type: 'POST',
+      data: JSON.stringify({ 'item_id': data , 'n': n}),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      async: true,
+      statusCode: {
+        200: function () {
+          console.log("Success");
+          alert("Updated Cart Quantity");
+          location.reload();
+        },
+        403: function () {
+          console.log("login");
+          alert("Please login as a buyer");
+        },
+        500: function () {
+          console.log("Internal Server Error");
+          alert("Server Error. Please try again later.");
+        }
+      }
+    });
+  }
 
   function checkout_items(data) {
     $.ajax({
