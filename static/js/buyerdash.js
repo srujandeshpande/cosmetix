@@ -90,12 +90,6 @@ $(function () {
           seller[0].textContent = item.seller;
           tbody.appendChild(clone);
         });
-        $('.pdel').click(function (e) {
-          e.preventDefault();
-          var id = this.id;
-          console.log(id);
-          delete_item(id);
-        });
       },
       500: function (msq) {
         console.log("Internal Server Error");
@@ -124,7 +118,7 @@ $(function () {
 
   function delete_item(data) {
     $.ajax({
-      url: '/api/item',
+      url: '/api/cart/item/',
       type: 'DELETE',
       data: JSON.stringify({ 'item_id': data }),
       contentType: 'application/json; charset=utf-8',

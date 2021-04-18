@@ -290,14 +290,21 @@ def add_new_product():
 #     return Response(status=403)
 
 
-@app.route("/api/item", methods=["DELETE"])
+@app.route("/api/cart/item/", methods=["DELETE"])
 def delete_from_cart():
     inputData = request.json
     Product_Data = pymongo.collection.Collection(db, "Product_Data")
     Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
     today = date.today()
     if "role" in session and session["role"] == "buyer":
+        data = json.loads(
+            dumps(Sales_Data.find_one({"_id": ObjectId(inputData["item_id"])}))
+        )
+        print(data)
         Sales_Data.delete_one({"_id": ObjectId(inputData["item_id"])})
+        Product_Data.update_one(
+            {"_id": ObjectId(data["product"])}, {"$inc": {"quantity": int(data['quantity'])}}
+        )
         return Response(status=200)
     return Response(status=403)
 
