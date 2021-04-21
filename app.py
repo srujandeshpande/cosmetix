@@ -316,7 +316,7 @@ class ShoppingCart:
         tprice = 0
         for i in data:
             if "price" in i:
-                tprice += int(i["price"])
+                tprice += int(i["price"])*int(i["quantity"])
         return {"price": tprice}
 
     def buyer_add_to_cart(inputData):
