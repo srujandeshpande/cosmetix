@@ -69,7 +69,7 @@ $(function () {
 
   function new_order(data) {
     $.ajax({
-      url: '/shopping_cart/',
+      url: '/api/buyer/cart/add/',
       type: 'POST',
       data: JSON.stringify({ 'product_id': data }),
       contentType: 'application/json; charset=utf-8',

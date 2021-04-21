@@ -1,3 +1,4 @@
+# IMPORTS
 import pymongo
 from bson.json_util import dumps
 import json
@@ -20,6 +21,7 @@ from datetime import date
 from bson.objectid import ObjectId
 from flask_classful import FlaskView, route
 
+# App constants
 
 app = Flask(__name__)
 CORS(app)
@@ -27,12 +29,16 @@ CORS(app)
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 app.secret_key = b"\xd2(*K\xa0\xa8\x13]g\x1e9\x88\x10\xb0\xe0\xcc"
 
+# Database connection
+
 mongo = pymongo.MongoClient(
     "mongodb+srv://admin:admin@cluster0-dlnod.gcp.mongodb.net/test?retryWrites=true&w=majority",
     maxPoolSize=50,
     connect=True,
 )
 db = pymongo.database.Database(mongo, "vyapara")
+
+# Customer Class
 
 
 class Customer(FlaskView):
@@ -72,50 +78,8 @@ class user(FlaskView):
         return Response(status=401)
 
 
-class shopping_cart(FlaskView):
-
-    # @app.route("/api/add_new_sale", methods=["POST"])
-
-    # Add to shopping cart
-    # AddItem()
-    def post(self):
-        inputData = request.json
-        Product_Data = pymongo.collection.Collection(db, "Product_Data")
-        Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
-        today = date.today()
-        if "role" in session and session["role"] == "buyer":
-            info = json.loads(
-                dumps(Product_Data.find_one({"_id": ObjectId(inputData["product_id"])}))
-            )
-            orderInfo = json.loads(
-                dumps(Sales_Data.find_one({"product": inputData["product_id"]}))
-            )
-            if orderInfo:
-                Sales_Data.update_one(
-                    {"product": inputData["product_id"]}, {"$inc": {"quantity": 1}}
-                )
-            else:
-                Sales_Data.insert_one(
-                    {
-                        "product": inputData["product_id"],
-                        "buyer": session["email"],
-                        "date": str(today.strftime("%b-%d-%Y")),
-                        "price": info["price"],
-                        "seller": info["seller"],
-                        "name": info["name"],
-                        "quantity": 1,
-                    }
-                )
-            Product_Data.update_one(
-                {"_id": ObjectId(inputData["product_id"])}, {"$inc": {"quantity": -1}}
-            )
-            return Response(status=200)
-        return Response(status=403)
-
-
 Customer.register(app, route_base="/")
 user.register(app)
-shopping_cart.register(app)
 
 
 @app.route("/api/test")
@@ -304,60 +268,6 @@ def edit_product():
 #     return Response(status=403)
 
 
-@app.route("/api/cart/item/", methods=["DELETE"])
-def delete_from_cart():
-    inputData = request.json
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
-    today = date.today()
-    if "role" in session and session["role"] == "buyer":
-        data = json.loads(
-            dumps(Sales_Data.find_one({"_id": ObjectId(inputData["item_id"])}))
-        )
-        # print(data)
-        Sales_Data.delete_one({"_id": ObjectId(inputData["item_id"])})
-        Product_Data.update_one(
-            {"_id": ObjectId(data["product"])},
-            {"$inc": {"quantity": int(data["quantity"])}},
-        )
-        return Response(status=200)
-    return Response(status=403)
-
-
-@app.route("/api/cart/quantity/", methods=["POST"])
-def update_cart_quantity():
-    inputData = request.json
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
-    today = date.today()
-    if "role" in session and session["role"] == "buyer":
-        data = json.loads(
-            dumps(Sales_Data.find_one({"_id": ObjectId(inputData["item_id"])}))
-        )
-        proddata = json.loads(
-            dumps(Product_Data.find_one({"_id": ObjectId(data["product"])}))
-        )
-        if int(data["quantity"]) == 1 and int(inputData["n"]) == -1:
-            Sales_Data.delete_one({"_id": ObjectId(inputData["item_id"])})
-            Product_Data.update_one(
-                {"_id": ObjectId(data["product"])},
-                {"$inc": {"quantity": int(data["quantity"])}},
-            )
-        elif int(inputData["n"]) == 1 and int(proddata["quantity"]) == 0:
-            return Response(status=401)
-        else:
-            Sales_Data.update_one(
-                {"_id": ObjectId(inputData["item_id"])},
-                {"$inc": {"quantity": int(inputData["n"])}},
-            )
-            Product_Data.update_one(
-                {"_id": ObjectId(data["product"])},
-                {"$inc": {"quantity": -int(inputData["n"])}},
-            )
-        return Response(status=200)
-    return Response(status=403)
-
-
 @app.route("/api/products/available/")
 def get_available_products():
     Product_Data = pymongo.collection.Collection(db, "Product_Data")
@@ -411,67 +321,200 @@ def get_seller_orders():
     return data2
 
 
+class ShoppingCart:
+    def buyer_cart():
+        Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
+        data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]})))
+        data2 = {"count": len(data), "data": data}
+        return data2
+
+    def buyer_total():
+        Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
+        data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]})))
+        tprice = 0
+        for i in data:
+            if "price" in i:
+                tprice += int(i["price"])
+        return {"price": tprice}
+
+    def buyer_add_to_cart(inputData):
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
+        today = date.today()
+        if "role" in session and session["role"] == "buyer":
+            info = json.loads(
+                dumps(Product_Data.find_one({"_id": ObjectId(inputData["product_id"])}))
+            )
+            orderInfo = json.loads(
+                dumps(Sales_Data.find_one({"product": inputData["product_id"]}))
+            )
+            if orderInfo:
+                Sales_Data.update_one(
+                    {"product": inputData["product_id"]}, {"$inc": {"quantity": 1}}
+                )
+            else:
+                Sales_Data.insert_one(
+                    {
+                        "product": inputData["product_id"],
+                        "buyer": session["email"],
+                        "date": str(today.strftime("%b-%d-%Y")),
+                        "price": info["price"],
+                        "seller": info["seller"],
+                        "name": info["name"],
+                        "quantity": 1,
+                    }
+                )
+            Product_Data.update_one(
+                {"_id": ObjectId(inputData["product_id"])}, {"$inc": {"quantity": -1}}
+            )
+            return Response(status=200)
+        return Response(status=403)
+
+    def buyer_checkout():
+        Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
+        Order_Data = pymongo.collection.Collection(db, "Order_Data")
+        data = json.loads(
+            dumps(Sales_Data.find({"buyer": session["email"]}, {"_id": 0}))
+        )
+        if len(data) == 0:
+            return Response(status=400)
+        if "role" in session and session["role"] == "buyer":
+            Order_Data.insert_many(data)
+            Sales_Data.delete_many({"buyer": session["email"]})
+            return Response(status=200)
+        return Response(status=403)
+
+    def buyer_orders():
+        Order_Data = pymongo.collection.Collection(db, "Order_Data")
+        data = json.loads(dumps(Order_Data.find({"buyer": session["email"]})))
+        data2 = {"count": len(data), "data": data}
+        return data2
+
+    def buyer_delete_from_cart(inputData):
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
+        today = date.today()
+        if "role" in session and session["role"] == "buyer":
+            data = json.loads(
+                dumps(Sales_Data.find_one({"_id": ObjectId(inputData["item_id"])}))
+            )
+            Sales_Data.delete_one({"_id": ObjectId(inputData["item_id"])})
+            Product_Data.update_one(
+                {"_id": ObjectId(data["product"])},
+                {"$inc": {"quantity": int(data["quantity"])}},
+            )
+            return Response(status=200)
+        return Response(status=403)
+
+    def buyer_update_cart_quantity(inputData):
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
+        today = date.today()
+        if "role" in session and session["role"] == "buyer":
+            data = json.loads(
+                dumps(Sales_Data.find_one({"_id": ObjectId(inputData["item_id"])}))
+            )
+            proddata = json.loads(
+                dumps(Product_Data.find_one({"_id": ObjectId(data["product"])}))
+            )
+            if int(data["quantity"]) == 1 and int(inputData["n"]) == -1:
+                Sales_Data.delete_one({"_id": ObjectId(inputData["item_id"])})
+                Product_Data.update_one(
+                    {"_id": ObjectId(data["product"])},
+                    {"$inc": {"quantity": int(data["quantity"])}},
+                )
+            elif int(inputData["n"]) == 1 and int(proddata["quantity"]) == 0:
+                return Response(status=401)
+            else:
+                Sales_Data.update_one(
+                    {"_id": ObjectId(inputData["item_id"])},
+                    {"$inc": {"quantity": int(inputData["n"])}},
+                )
+                Product_Data.update_one(
+                    {"_id": ObjectId(data["product"])},
+                    {"$inc": {"quantity": -int(inputData["n"])}},
+                )
+            return Response(status=200)
+        return Response(status=403)
+
+
+# Start Routes for Shopping Cart Class
+
+
 @app.route("/api/buyer/cart")
 def get_buyer_cart():
-    Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
-    data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]})))
-    data2 = {"count": len(data), "data": data}
-    return data2
+    return ShoppingCart.buyer_cart()
 
 
 @app.route("/api/buyer/total/")
 def get_buyer_total():
-    Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
-    data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]})))
-    tprice = 0
-    for i in data:
-        if "price" in i:
-            tprice += int(i["price"])
-    return {"price": tprice}
+    return ShoppingCart.buyer_total()
 
 
-@app.route("/api/buyer/orders")
-def get_buyer_orders():
-    Order_Data = pymongo.collection.Collection(db, "Order_Data")
-    data = json.loads(dumps(Order_Data.find({"buyer": session["email"]})))
-    data2 = {"count": len(data), "data": data}
-    return data2
+@app.route("/api/buyer/cart/add/", methods=["POST"])
+def add_to_cart():
+    inputData = request.json
+    return ShoppingCart.buyer_add_to_cart(inputData)
 
 
 @app.route("/api/checkout", methods=["POST"])
 def checkout_items():
-    Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
-    Order_Data = pymongo.collection.Collection(db, "Order_Data")
-    data = json.loads(dumps(Sales_Data.find({"buyer": session["email"]}, {"_id": 0})))
-    # print(data)
-    if len(data) == 0:
-        return Response(status=400)
-    if "role" in session and session["role"] == "buyer":
-        Order_Data.insert_many(data)
-        Sales_Data.delete_many({"buyer": session["email"]})
-        return Response(status=200)
-    return Response(status=403)
+    return ShoppingCart.buyer_checkout()
+
+
+@app.route("/api/buyer/orders")
+def get_buyer_orders():
+    return ShoppingCart.buyer_orders()
+
+
+@app.route("/api/cart/item/", methods=["DELETE"])
+def delete_from_cart():
+    inputData = request.json
+    return ShoppingCart.buyer_delete_from_cart(inputData)
+
+
+@app.route("/api/cart/quantity/", methods=["POST"])
+def update_cart_quantity():
+    inputData = request.json
+    return ShoppingCart.buyer_update_cart_quantity(inputData)
+
+
+# End Routes for Shopping Cart Class
+
+
+class Admin:
+    def approve_product(inputData):
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        if "role" in session and session["role"] == "admin":
+            Product_Data.update_one(
+                {"_id": ObjectId(inputData["product_id"])}, {"$set": {"approved": True}}
+            )
+            return Response(status=200)
+        return Response(status=403)
+
+    def delete_product(inputData):
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        if "role" in session and (
+            session["role"] == "seller" or session["role"] == "admin"
+        ):
+            Product_Data.delete_one({"_id": ObjectId(inputData["product_id"])})
+            return Response(status=200)
+        return Response(status=403)
+
+
+# Start Admin Routes
 
 
 @app.route("/api/product/approve/", methods=["PUT"])
 def approve_product():
     inputData = request.json
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    if "role" in session and session["role"] == "admin":
-        Product_Data.update_one(
-            {"_id": ObjectId(inputData["product_id"])}, {"$set": {"approved": True}}
-        )
-        return Response(status=200)
-    return Response(status=403)
+    return Admin.approve_product(inputData)
 
 
 @app.route("/api/delete_product/", methods=["DELETE"])
 def delete_product():
     inputData = request.json
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    if "role" in session and (
-        session["role"] == "seller" or session["role"] == "admin"
-    ):
-        Product_Data.delete_one({"_id": ObjectId(inputData["product_id"])})
-        return Response(status=200)
-    return Response(status=403)
+    return Admin.delete_product(inputData)
+
+
+# End Admin Routes
