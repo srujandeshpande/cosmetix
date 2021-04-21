@@ -115,30 +115,6 @@ def admin_portal():
     return render_template("admin_portal.html")
 
 
-@app.route("/seller_login")
-def seller_login():
-    if "role" in session and session["role"] == "seller":
-        return render_template("seller_dash.html")
-    else:
-        return render_template("seller_login.html")
-
-
-# @app.route("/buyer_dash")
-# def buyer_dash():
-#     if "role" in session and session["role"] == "buyer":
-#         return render_template("buyer_dash.html")
-#     else:
-#         return render_template("login_buyer.html")
-
-
-@app.route("/seller_dash")
-def seller_dash():
-    if "role" in session and session["role"] == "seller":
-        return render_template("seller_dash.html")
-    else:
-        return render_template("seller_login.html")
-
-
 @app.route("/api/new_buyer", methods=["POST"])
 def new_buyer():
     inputData = request.json
@@ -156,169 +132,175 @@ def new_buyer():
     return Response(status=200)
 
 
+class Vendor:
+    def seller_login():
+        if "role" in session and session["role"] == "seller":
+            return render_template("seller_dash.html")
+        else:
+            return render_template("seller_login.html")
+
+    def seller_dash():
+        if "role" in session and session["role"] == "seller":
+            return render_template("seller_dash.html")
+        else:
+            return render_template("seller_login.html")
+
+    def new_seller(inputData):
+        Seller_Data = pymongo.collection.Collection(db, "Seller_Data")
+        sellers = json.loads(dumps(Seller_Data.find()))
+        if len(sellers) != 0:
+            for i in sellers:
+                if i["email"] == inputData["email"]:
+                    return Response(status=401)
+        Seller_Data.insert_one(
+            {"email": inputData["email"], "password": inputData["password"]}
+        )
+        session["role"] = "seller"
+        session["email"] = inputData["email"]
+        return Response(status=200)
+
+    def login_seller(inputData):
+        Seller_Data = pymongo.collection.Collection(db, "Seller_Data")
+        sellers = json.loads(dumps(Seller_Data.find()))
+        if len(sellers) == 0:
+            return Response(status=401)
+        for i in sellers:
+            if i["email"] == inputData["email"]:
+                if i["password"] == inputData["password"]:
+                    session["role"] = "seller"
+                    session["email"] = i["email"]
+                    return Response(status=200)
+                else:
+                    return Response(status=403)
+        return Response(status=401)
+
+    def all_products():
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        data = json.loads(dumps(Product_Data.find({"seller": session["email"]})))
+        data2 = {"count": len(data), "data": data}
+        return data2
+
+    def get_single_product(inputData):
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        data = json.loads(
+            dumps(Product_Data.find_one({"_id": ObjectId(inputData["product_id"])}))
+        )
+        return data
+
+    def get_seller_orders():
+        Order_Data = pymongo.collection.Collection(db, "Order_Data")
+        data = json.loads(dumps(Order_Data.find({"seller": session["email"]})))
+        data2 = {"count": len(data), "data": data}
+        return data2
+
+
+# Start Vendor Class Routes
+
+
+@app.route("/seller_login")
+def seller_login():
+    return Vendor.seller_login()
+
+
+@app.route("/seller_dash")
+def seller_dash():
+    return Vendor.seller_dash()
+
+
 @app.route("/api/new_seller", methods=["POST"])
 def new_seller():
     inputData = request.json
-    Seller_Data = pymongo.collection.Collection(db, "Seller_Data")
-    sellers = json.loads(dumps(Seller_Data.find()))
-    if len(sellers) != 0:
-        for i in sellers:
-            if i["email"] == inputData["email"]:
-                return Response(status=401)
-    Seller_Data.insert_one(
-        {"email": inputData["email"], "password": inputData["password"]}
-    )
-    session["role"] = "seller"
-    session["email"] = inputData["email"]
-    return Response(status=200)
-
-
-# @app.route("/api/login_buyer", methods=["POST"])
-# def login_buyer():
-#     inputData = request.json
-#     Buyer_Data = pymongo.collection.Collection(db, "Buyer_Data")
-#     buyers = json.loads(dumps(Buyer_Data.find()))
-#     if len(buyers) == 0:
-#         return Response(status=401)
-#     for i in buyers:
-#         if i["email"] == inputData["email"]:
-#             if i["password"] == inputData["password"]:
-#                 session["role"] = "buyer"
-#                 session["email"] = i["email"]
-#                 return Response(status=200)
-#             else:
-#                 return Response(status=403)
-#     return Response(status=401)
+    return Vendor.new_seller(inputData)
 
 
 @app.route("/api/login_seller", methods=["POST"])
 def login_seller():
     inputData = request.json
-    Seller_Data = pymongo.collection.Collection(db, "Seller_Data")
-    sellers = json.loads(dumps(Seller_Data.find()))
-    if len(sellers) == 0:
-        return Response(status=401)
-    for i in sellers:
-        if i["email"] == inputData["email"]:
-            if i["password"] == inputData["password"]:
-                session["role"] = "seller"
-                session["email"] = i["email"]
-                return Response(status=200)
-            else:
-                return Response(status=403)
-    return Response(status=401)
-
-
-@app.route("/api/product", methods=["POST"])
-def add_new_product():
-    inputData = request.json
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    if "role" in session and session["role"] == "seller":
-        # Product_Data.insert_one(
-        #     {
-        #         "seller": session["email"],
-        #         "name": inputData["name"],
-        #         "price": inputData["price"],
-        #         "description": inputData["description"],
-        #     }
-        # )
-        inputData["quantity"] = int(inputData["quantity"])
-        inputData["seller"] = session["email"]
-        inputData["approved"] = False
-        Product_Data.insert_one(inputData)
-        return Response(status=200)
-    return Response(status=403)
-
-
-@app.route("/api/product/edit/", methods=["PUT"])
-def edit_product():
-    inputData = request.json
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    if "role" in session and session["role"] == "seller":
-        inputData["quantity"] = int(inputData["quantity"])
-        # inputData["_id"] = ObjectId(inputData["_id"])
-        id = ObjectId(inputData.pop("_id"))
-        print(inputData)
-        Product_Data.update_one({"_id": id}, {"$set": inputData})
-        return Response(status=200)
-    return Response(status=403)
-
-
-# @app.route("/api/add_new_sale", methods=["POST"])
-# def add_new_sale():
-#     inputData = request.json
-#     Product_Data = pymongo.collection.Collection(db, "Product_Data")
-#     Sales_Data = pymongo.collection.Collection(db, "Sales_Data")
-#     today = date.today()
-#     if "role" in session and session["role"] == "buyer":
-#         info = json.loads(
-#             dumps(Product_Data.find_one({"_id": ObjectId(inputData["product_id"])}))
-#         )
-#         Sales_Data.insert_one(
-#             {
-#                 "product": inputData["product_id"],
-#                 "buyer": session["email"],
-#                 "date": str(today.strftime("%b-%d-%Y")),
-#                 "price": info["price"],
-#                 "seller": info["seller"],
-#                 "name": info["name"],
-#             }
-#         )
-#         return Response(status=200)
-#     return Response(status=403)
-
-
-@app.route("/api/products/available/")
-def get_available_products():
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    data = json.loads(
-        dumps(Product_Data.find({"approved": True, "quantity": {"$gt": 0}}))
-    )
-    data2 = {"count": len(data), "data": data}
-    return data2
-
-
-@app.route("/api/get_all_products")
-def get_products():
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    data = json.loads(dumps(Product_Data.find({"approved": True})))
-    data2 = {"count": len(data), "data": data}
-    return data2
-
-
-@app.route("/api/products/unapproved/")
-def get_products_unnapproved():
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    data = json.loads(dumps(Product_Data.find({"approved": False})))
-    data2 = {"count": len(data), "data": data}
-    return data2
+    return Vendor.login_seller(inputData)
 
 
 @app.route("/api/seller/products")
 def get_seller_products():
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    data = json.loads(dumps(Product_Data.find({"seller": session["email"]})))
-    data2 = {"count": len(data), "data": data}
-    return data2
+    return Vendor.all_products()
 
 
 @app.route("/api/seller/product/", methods=["POST"])
 def get_seller_product():
     inputData = request.json
-    Product_Data = pymongo.collection.Collection(db, "Product_Data")
-    data = json.loads(
-        dumps(Product_Data.find_one({"_id": ObjectId(inputData["product_id"])}))
-    )
-    # data2 = {"count": len(data), "data": data}
-    return data
+    return Vendor.get_single_product(inputData)
 
 
 @app.route("/api/seller/orders")
 def get_seller_orders():
-    Order_Data = pymongo.collection.Collection(db, "Order_Data")
-    data = json.loads(dumps(Order_Data.find({"seller": session["email"]})))
-    data2 = {"count": len(data), "data": data}
-    return data2
+    return Vendor.get_seller_orders()
+
+
+# End Vendor Class Routes
+
+
+class Inventory:
+    def new_product(inputData):
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        if "role" in session and session["role"] == "seller":
+            inputData["quantity"] = int(inputData["quantity"])
+            inputData["seller"] = session["email"]
+            inputData["approved"] = False
+            Product_Data.insert_one(inputData)
+            return Response(status=200)
+        return Response(status=403)
+
+    def edit_product(inputData):
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        if "role" in session and session["role"] == "seller":
+            inputData["quantity"] = int(inputData["quantity"])
+            # inputData["_id"] = ObjectId(inputData["_id"])
+            id = ObjectId(inputData.pop("_id"))
+            print(inputData)
+            Product_Data.update_one({"_id": id}, {"$set": inputData})
+            return Response(status=200)
+        return Response(status=403)
+
+    def available_products():
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        data = json.loads(
+            dumps(Product_Data.find({"approved": True, "quantity": {"$gt": 0}}))
+        )
+        data2 = {"count": len(data), "data": data}
+        return data2
+
+    def all_products():
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        data = json.loads(dumps(Product_Data.find({"approved": True})))
+        data2 = {"count": len(data), "data": data}
+        return data2
+
+
+# Start Inventory Class Routes
+
+
+@app.route("/api/product", methods=["POST"])
+def add_new_product():
+    inputData = request.json
+    return Inventory.new_product(inputData)
+
+
+@app.route("/api/product/edit/", methods=["PUT"])
+def edit_product():
+    inputData = request.json
+    return Inventory.edit_product(inputData)
+
+
+@app.route("/api/products/available/")
+def get_available_products():
+    return Inventory.available_products()
+
+
+@app.route("/api/get_all_products")
+def get_products():
+    return Inventory.all_products()
+
+
+# End Inventory Routes
 
 
 class ShoppingCart:
@@ -501,6 +483,12 @@ class Admin:
             return Response(status=200)
         return Response(status=403)
 
+    def unapproved_products():
+        Product_Data = pymongo.collection.Collection(db, "Product_Data")
+        data = json.loads(dumps(Product_Data.find({"approved": False})))
+        data2 = {"count": len(data), "data": data}
+        return data2
+
 
 # Start Admin Routes
 
@@ -515,6 +503,11 @@ def approve_product():
 def delete_product():
     inputData = request.json
     return Admin.delete_product(inputData)
+
+
+@app.route("/api/products/unapproved/")
+def get_products_unnapproved():
+    return Admin.unapproved_products()
 
 
 # End Admin Routes
